@@ -1,0 +1,153 @@
+\documentclass[12pt]{beamer}
+
+\usetheme{}
+\usefonttheme[stillsansserifsmall]{serif}
+\usefonttheme[onlylarge]{structurebold}
+%\usecolortheme[RGB={10,120,100}]{structure}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage[round]{natbib}
+\usepackage[english]{babel}
+
+\usepackage{ulem}
+
+%\usepackage{lateL.rowval[L.colptr[i]+1xsym}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{bbm}
+\usepackage{amsfonts}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{color}
+\usepackage{colordvi}
+\usepackage{subcaption}
+\usepackage{xspace}
+\usepackage{algorithmic}
+
+\usepackage{color}
+
+%% Macros
+
+\newcommand{\bmat}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\T}{^T\!}
+\newcommand{\ones}{\mathbbm{1}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\renewcommand*{\bibfont}{\footnotesize}
+%%
+
+\title[]{Weighted Alternating Least-Squares for Low-Rank Completion}
+\author[Ron Estrin, Brad Nelson (ICME)]{CME 258}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+Suppose that you want to recommend movies/tv shows/music based on users' viewing habits.
+\\~
+
+You have $A \in \RR^{m \times n}$ where
+\begin{itemize}
+\item each row $i$ corresponds to a user,
+\item each column $j$ corresponds to an item (e.g. movie),
+\end{itemize}
+so that
+$$ A_{ij} = \begin{cases} \mbox{user $i$'s rating of movie $j$} & \mbox{if $i$ watched $j$} \\ \mbox{unknown} & \mbox{otherwise.} \end{cases}$$
+Want to ``complete'' the matrix by determining the unknown entries (predict a user's ratings for movies they have not yet watched).
+\end{frame}
+
+\begin{frame}
+Two possible goals:
+\\~
+\begin{itemize}
+\item Given a user's viewing history, suggest new movies to watch.
+\item Given a movie, determine similar movies (nearest neighbours).
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+Assume $A \approx UV^T$ for $U \in \RR^{m \times r}$, $V \in \RR^{n \times r}$ with $r \ll m,n$.
+\\~
+
+Arguably reasonable assumption:
+\begin{itemize}
+\item Can think of movies as being a ``linear combination'' of much fewer genres.
+\item Can think of users as being a ``linear combination'' of people who like certain genres.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+Let $U = \bmat{u_1^T \\ \vdots \\ u_m^T}$, $V = \bmat{v_1^T \\ \vdots \\ v_n^T}$, and $ W_{ij} = \begin{cases} 1 & (i,j) \mbox{ observed} \\ 0 & \mbox{otherwise.} \end{cases}$
+\\~
+\\~
+
+Then we solve
+\begin{align*}
+&\min_{U,V} \frac{1}{2} \sum_{(i,j) \mbox{ observed}} (A_{i,j} - u_i^T v_j)^2 + \lambda \left( \sum_{i=1}^m \|u_i\|_2^2 + \sum_{j=1}^n \|v_j\|_2^2 \right) \\~\\
+=&\min_{U,V} \frac{1}{2}\|W \circ (A - UV^T)\|^2_F + \lambda \left( \|U\|_F^2 + \|V\|_F^2 \right),
+\end{align*}
+where $(A \circ B)_{ij} = A_{ij} B_{ij}$.
+\end{frame}
+
+\begin{frame}
+We'll solve this problem via alternating minimization:
+\begin{itemize}
+\item Fix $U$ and solve for $V$, then
+\item Fix $V$ and solve for $U$.
+\end{itemize}
+When one factor is fixed, this becomes regular linear least-squares.
+\\~
+
+Notice that this is equivalent to solving
+\begin{align*}
+\min_{v_1, \dots, v_n} \sum_{j=1}^n \frac{1}{2} \|W_{:,j} \circ (A_{:,j} - Uv_j)\|_2^2 + \lambda \|v_j\|_2^2,
+\end{align*}
+so we can solve for every row of $V$ independently.
+\\~
+
+(Need to slice columns of $A$ repeatedly...)
+\end{frame}
+
+\begin{frame}
+To get $v_j$, need to solve linear system
+$$ \left( U^T \mbox{diag} (W_{:,j}) U + \lambda I \right) v_j = U^T A_{:,j}. $$
+\\~
+
+How can we perform this operation quickly?
+\end{frame}
+
+\begin{frame}
+Notice that 
+	$$U^T \mbox{diag}(W_{:,j}) U = \sum_{i: W_{i,j} = 1} u_i u_i^T, $$
+(syrk!).
+\\~
+
+Similarly,
+$$ U^T A_{:,j} = \sum_{i: W_{i,j} = 1} u_i A_{i,j}. $$
+\end{frame}
+
+\begin{frame}{Homework 2}
+We have provided you with a basic implementation of a weighted-alternating-least-squares solver in python. Your homework is to improve its performance!
+\\~
+
+Some ideas:
+\begin{itemize}
+\item Use cProfile to check which operations are taking up the most time.
+\item Use the correct sparse-matrix format depending on whether $U$ or $V$ is being updated.
+\item Find the best way to solve the linear system. Which factorization would you use? How would you call it?
+\item Avoid ``todense()'' calls.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+This assignment is intentionally open-ended. Do your best to improve the performance as much as possible.
+\\~
+
+We've also provided you with a method to check the quality of your factorization: you can input a movie from the MovieLens dataset, and check which movies are considered similar according to the factorization.
+\end{frame}
+
+\end{document}

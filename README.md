@@ -1,2 +1,1 @@
-# cme258
-Libraries for Scientific Computing
+# laopt-libraries

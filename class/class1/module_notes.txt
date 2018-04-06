@@ -1,0 +1,34 @@
+umask 0022
+
+/farmshare/user_data/cme257/
+
+create a module that people can use
+
+MODULEPATH=$MODULEPATH:/farmshare/user_data/cme257/modules
+
+prefix=/farmshare/user_data/cme257/software
+
+JULIA_PKGDIR=/farmshare/user_data/cme257/software/julia/packages
+
+
+
+set julia path
+
+write prefix=/path/to/install/folder into Make.user and then run make install. If there is a version of Julia already installed in this folder, you should delete it before running make install.
+
+
+or
+MODULEPATH=$MODULEPATH:/farmshare/user_data/cme257/modules
+
+recommended workflow
+module use /farmshare/user_data/cme257/modules
+module load julia/0.6.2-cme257
+
+may need to 
+
+chmod 755 *.ji
+
+in /farmshare/user_data/cme257/software/julia/packages/lib/v0.6
+
+in order to make sure everyone has permissions to use the precompiled module files
+
