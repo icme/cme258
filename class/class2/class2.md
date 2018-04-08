@@ -95,7 +95,7 @@ Note:
   - If calling BLAS routines directly, need to specify the type (``s``, ``d``, ``c``, ``z``).
   - It's not always clear which underlying BLAS implementation is being used between scipy and numpy, so similar operations can sometimes have different performance.
 
-```Python
+```python
 import numpy as np
 import scipy as sp
 import scipy.linalg
@@ -142,7 +142,7 @@ Note:
   - Operations with ``!`` are in-place (traditional BLAS approach).
   - Make sure you use ``'`` and not ``"`` when specifying ``UPLO`` etc.
 
-```julialang
+```julia
 n = 1000
 m = 300
 T = Float64 #Complex{Float64}
@@ -159,9 +159,10 @@ tA = 'N'
 
 ## Calling BLAS from C++
 Will require this at the top of your file after the ``#include``'s.
+
 ```cpp
-extern "C"{
-  // list fortran functions here ending with _
+extern "C" {
+  // list fortran functions here ending with _ (underscore)
   double dgemv_( char* TRANS, const int* M, const int* N, double* alpha,
                double* A, const int* LDA, double* X, const int* INCX,
                double* beta, double* Y, const int* INCY);
@@ -199,6 +200,7 @@ Similarly, ``LDA`` defines the stride between adjacent columns (the number of me
 What would you set for ``m,n,lda`` if you had a 100-by-300 matrix ``A`` (in column-major order), and wanted to compute ``A[1:50, 1:2:31]``, (i.e., use columns 1,3,5,...,29,31).
 
 ## Profiling Python and Julia
+
 [``cProfile``](https://docs.python.org/2/library/profile.html) is a popular profiling library for Python. Basic usage:
 
 ```Python
@@ -210,11 +212,46 @@ def some_code_to_profile():
 cProfile.run('some_code_to_profile')
 ```
 
-Julia Profiling.
+### Julia Profiling
+
+Note: Julia is just-in-time compiled, so usually you'll want to run code once to compile before expecting accurate profiling results.
+
+For simple functions, it's pretty easy to track time and memory usage using the `@time` macro
 
 ```julia
-FOR BRAD
+n = 100;
+x = randn(n);
+A = randn(n,n);
+@time y = A*x;
+@time y = A*x; # run twice for JIT
 ```
+
+Julia has a [built-in profiler](https://docs.julialang.org/en/stable/manual/profile/#Profiling-1), which we'll demonstrate on the following function:
+```julia
+function test_fn()
+    A = randn(1000, 1000)
+    b  = randn(1000)
+    c = A * b
+    maximum(c)
+end
+
+test_fn()
+```
+
+```julia
+@profile test_fn()
+
+Profile.print()
+```
+
+To increase number of samples, try putting your function in a for-loop:
+```julia
+Profile.clear()
+@profile for i = 1:100 test_fn() end
+Profile.print()
+```
+
+You can also see some further discussion about performance and profiling in Julia in [CME 257 notes](https://github.com/icme/cme257-advanced-julia/blob/master/class/class6/class6.ipynb)
 
 <!--
 ## Exercise
