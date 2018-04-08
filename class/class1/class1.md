@@ -18,6 +18,13 @@ Libraries are files on your computer that can be used by different pieces of sof
 * Static libraries - executables copy functionality - `*.a`
 * Shared libraries - a single library is shared by all executables - `*.so`, `*.dylib`
 
+## Why Libraries?
+
+Libraries implement code so that you don't have to.  This has several advantages:
+* You spend less time writing and testing code
+* Your software is more reliable (tried and tested libraries are less likely to have a bug).
+* Your software can have better performance (many libraries have put a lot of effort into performance considerations so you don't have to).
+
 ## Where do libraries live?
 
 It can depend on the system, but default locations (i.e. system libraries, and libraries placed by your package manager) are often places like `/lib/`, `/lib64/`, `/usr/lib/`, `/usr/lib64/`, etc.
@@ -51,7 +58,7 @@ module spyder blas
 
 # Compiling code using a library
 
-We're going to talk about how to do this with GNU compilers such as `gcc`, `gfortran`, and `g++`.  If you use a different compiler there may be some differences. This section just covers the basics.  We'll see more examples throughout the class.  Check out the [code](./code/) folder for examples.
+We're going to talk about how to do this with GNU compilers such as `gcc`, `gfortran`, and `g++`.  If you use a different compiler there may be some differences. This section just covers the basics.  We'll see more examples throughout the class.  Check out the [code](./code/) folder.
 
 In order to tell your compiler to link to a particular library, you need to add a flag to your compile command.  For example, let's say I want to use the `cos`, which is found in `libm.so` ("libmath").  In this case your compile command should include `-lm`.  The general rule is that if the library name is `libfoo.so`, that you should pass `-lfoo` to the compiler.
 
@@ -59,6 +66,8 @@ Linking comes after compiling object files, and the `-lfoo` flag should come tow
 ```bash
 gcc -o foo foo.c -llapack -lblas
 ```
+
+Note: some compilers will automatically link the math library if needed (so the `-lm` flag is superfluous), but some will not.
 
 ## Example in C
 
@@ -72,7 +81,7 @@ To compile this program, we can then use
 ```bash
 gcc -o c_ex mathex.c -lm
 ```
-This puts the command on one line.  Alternatively, we can split up the creation of the object file and the linking step
+This compiles in a single command.  Alternatively, we can split up the creation of the object file and the linking step
 ```bash
 gcc -c -o mathex.o mathex.c
 gcc -o c_ex mathex.o -lm
@@ -147,22 +156,28 @@ If you want to create your own libraries, check out
 
 # Exercise
 
-* investigate a little demo project on farmshare
-* investigate libraries
-* modify a Makefile
+1. Clone the git repository for this course to a computer you want to work on: https://github.com/icme/cme258
+2. Build the demo files in the code folder on your computer.  Try the default `make` command, and a `make` command for a specific object.  Also clean your build directory using `make clean`
+3. modify the Makefile in the code folder to make the `c_ex` executable in two steps: first make an object, then link to libraries.
+4. Try to find a BLAS shared object library on your system.  See if you can find the `daxpy` symbol (hint: use the `-D` flag for `nm` with dynamic libraries).
+
 
 
 # BLAS
 
-BLAS = "Basic Linear Algebra Subprograms"
+[BLAS](http://www.netlib.org/blas/) = "Basic Linear Algebra Subprograms"
 
 BLAS is a standard for vector-vector, matrix-vector, and matrix-matrix operations.  It is available in several implementations, which we will talk about next class.
 
-## Brief History of BLAS
+## History and Purpose of BLAS
 
-TODO: fill in
+BLAS routines were first released in a Fortran library [in 1979](https://dl.acm.org/citation.cfm?doid=355841.355847). BLAS was developed to provide standard implementations of common linear algebra routines, and is used by many other linear algebra packages.  The goal is to make it so you don't need to write your own low-level linear algebra implementations, which makes bugs less likely and generally improves performance.
 
-**BLAS Paradigm**
+* The BLAS reference is maintained on [netlib.org](http://www.netlib.org/), as well as references for several other numerical libraries.
+* The [BLAS Wikipedia page](https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms) has some discussion of history and usage of BLAS.
+* SIAM has an [interview with Jack Dongarra](http://history.siam.org/pdfs2/Dongarra_%20returned_SIAM_copy.pdf), who has been involved in creating and maintaining numerical packages over many years, and talks about BLAS, LAPACK, and other packages.
+
+## BLAS Paradigm
 
 Memory access and movement is the most expensive part of numerical code.
 
@@ -222,7 +237,7 @@ for (int j = 0; j < n; j++) {
 ```
 We'll talk about the other formats a bit next class.
 
-## Levels of Blas
+## Levels of BLAS
 
 BLAS operations (the `<mod>` in the names) are split into three levels depending on what the input data are
 * [Blas level 1 routines](https://software.intel.com/en-us/mkl-developer-reference-c-blas-level-1-routines-and-functions) - vector-vector operations
@@ -338,7 +353,7 @@ tA = 'N'
 ```
 
 # Exercise
-1. What is your favorite linear algebra operation?  What is the corresponding BLAS function?
+1. What is your favorite (basic) linear algebra operation?  What is the corresponding BLAS function?
 2. what do you expect the `zsyrk` function to do?
 3. If you have Julia, demonstrate how to use the [`syrk!` function](https://docs.julialang.org/en/stable/stdlib/linalg/#Base.LinAlg.BLAS.syrk!) with complex data.  If you don't have Julia, check it out.
 4. How would you write the following pseudocode using BLAS operations?
