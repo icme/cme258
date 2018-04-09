@@ -5,6 +5,17 @@ Today:
 2. Calling BLAS from Python/Julia/C++
 3. Profiling
 
+## More BLAS Practice
+One step of the Lanczos Process on the operator ``A + c*B*B'`` is the following
+```
+Given v{k}, v{k-1}, beta{k}
+alpha{k} = v{k}'*(A+c*B*B')*v{k}
+beta{k+1}*v{k+1} = (A+c*B*B')*v{k} - alpha{k}*v{k} - beta{k}*v{k-1}
+```
+Note that ``beta{k+1}*v{k+1}`` means scale ``beta{k+1} = ||(A+c*B*B')*v{k} - alpha{k}*v{k} - beta{k}*v{k-1}||`` and ``v{k+1}`` is scaled to be norm 1.
+
+'Implement' the above using the necessary BLAS calls, trying to minimize the number of operations and number of vectors in memory that you would need to keep around.
+
 ## Row vs. Column Major Order
 A 2D m*n array (matrix) is stored as a 1D m*n length array in memory.
 - Row major: Each row is a contiguous block of memory.
