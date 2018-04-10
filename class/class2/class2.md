@@ -268,3 +268,35 @@ You can also see some further discussion about performance and profiling in Juli
 ## Exercise
 Provide a few different operations/codes. Figure out which one is fastest by profiling/what is bottleneck.
 -->
+
+## Homework 1
+Putting what you learned about BLAS to the test! Your job will be to implement the power method for computing eigenvalues (for symmetric matrices) in C++ using BLAS.
+
+The power method is the following:
+```MATLAB
+k = 1
+lambda_old = 0
+lambda = 1
+tol = 1e-6
+x initialized to random vector
+
+while(|lambda - lambda_old| > tol and k < maxit)
+  lambda_old = lambda
+  lambda = x'*A*x/(x'*x)
+  x = A*x/norm(x)
+end
+(lambda,x) are eigenvalue/eigenvector pair
+```
+
+We've provided you with starter code ``hw/hw1/power_method.cpp`` and a Makefile. Once you build the code, the usage is the following:
+```
+power_method matrix_file
+```
+where matrix_file is a text file containing the matrix whose eigenvalue you're going to compute. The matrix file will look something like
+```
+3 // Number of rows/columns
+1 2 3 // 3 lines with 3 numbers separated by whitespace
+4 5 6
+7 8 9
+```
+The starter code will take in a matrix, parse it, and prepare it for you as a 1D array of size n*n, and print the results. Your job is to to actually implement the power-method part. You can check for correctness by throwing a matrix you're testing against into MATLAB/Julia/Octave and calling for an eigenvalue decomposition to see if you recover one of the eigenvalues/eigenvectors.
