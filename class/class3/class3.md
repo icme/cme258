@@ -11,7 +11,7 @@ On top of BLAS, this should cover most standard things you might imagine doing w
 
 We didn't get to this at the end of class 2, and you'll want it on the next HW.
 
-[Here's](../class2.md#profiling-python-and-julia) a link to the section.
+[Here's](../class2/class2.md#profiling-python-and-julia) a link to the section.
 
 
 # LAPACK
