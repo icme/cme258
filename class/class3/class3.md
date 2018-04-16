@@ -1,5 +1,19 @@
 # Class 3 - Direct methods for Dense Matrices
 
+Today we'll cover LAPACK and FFTW.
+
+* LAPACK: factorization-based algorithms for linear systems and eigenvalues
+* FFTW: Fourier transforms
+
+On top of BLAS, this should cover most standard things you might imagine doing with dense matrices/vectors.
+
+# Profiling
+
+We didn't get to this at the end of class 2, and you'll want it on the next HW.
+
+[Here's](../class2.md#profiling-python-and-julia) a link to the section.
+
+
 # LAPACK
 LAPACK = "Linear Algebra PACKage"
 
@@ -9,7 +23,7 @@ Official website is the [netlib](http://www.netlib.org/lapack/) page
 
 LAPACKE = standard C-language interface.
 
-Julia interface [here](https://docs.julialang.org/en/stable/stdlib/linalg/#LAPACK-Functions-1)
+You'll also commonly find BLAS and LAPACK bundled together, such as in MKL.
 
 ## History
 
@@ -61,6 +75,19 @@ Eigenpair computation:
 
 ## Julia Interface
 
+To get used to the function calls, we'll first go through some examples in Julia.
+
+Follow along in [LAPACK_julia.ipynb](LAPACK_julia.ipynb).
+
+## Example in C
+
+Now, we'll see what an actual function call to the library looks like in C.
+
+## Exercises
+
+1. Use LAPACK to compute the SVD of a double precision `ge` matrix in Julia.
+2. Use LAPACK to compute the SVD of a double precision `ge` matrix in C.
+3. In the language of your choice, compute the SVD of a `sy` matrix.
 
 # FFTW
 
@@ -82,3 +109,9 @@ Paradigm:
 You can call FFTW from Julia using the [FFTW package](https://github.com/JuliaMath/FFTW.jl).  See also the [AbstractFFTs](https://juliamath.github.io/AbstractFFTs.jl/stable/api.html) package, which describes the interface.
 
 ## FFTW in C
+
+See the example in the [code folder](code/fftw)
+
+## Exercise
+
+* Convolution of two vectors
