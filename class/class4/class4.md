@@ -67,7 +67,7 @@ Storing a matrix more cleverly than a 2D array definitely pays off!
 **Programming Languages and Sparse Matrices**
 - MATLAB: Only supports CSC.
 - Python: Implements many sparse matrix formats.
-- Julia: Only supports CSC.
+- Julia: Base supports CSC. (You can find other formats in packages).
 
 Note that you can always implement your own formats as well!
 
