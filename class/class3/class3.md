@@ -13,7 +13,6 @@ We didn't get to this at the end of class 2, and you'll want it on the next HW.
 
 [Here's](../class2/class2.md#profiling-python-and-julia) a link to the section.
 
-
 # LAPACK
 LAPACK = "Linear Algebra PACKage"
 
@@ -81,11 +80,15 @@ Follow along in [LAPACK_julia.ipynb](LAPACK_julia.ipynb).
 
 ## Example in C
 
-Now, we'll see what an actual function call to the library looks like in C.
+Now, we'll see what an actual function call to the library looks like in C.  See the [syev_example.c](code/lapack/syev_example.c) file for example.  The function call for `dsyev` can be found [here](http://www.netlib.org/lapack/explore-html/d2/d8a/group__double_s_yeigen_ga442c43fca5493590f8f26cf42fed4044.html#ga442c43fca5493590f8f26cf42fed4044).
+
+## Python Interface
+
+Like BLAS, SciPy exposes a LAPACK interface.  See [here](https://docs.scipy.org/doc/scipy/reference/linalg.lapack.html) for available functions.
 
 ## Exercises
 
-1. Use LAPACK to compute the SVD of a double precision `ge` matrix in Julia.
+1. Use LAPACK to compute the SVD of a double precision `ge` matrix in Julia or Python.
 2. Use LAPACK to compute the SVD of a double precision `ge` matrix in C.
 3. In the language of your choice, compute the SVD of a `sy` matrix.
 
