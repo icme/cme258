@@ -82,6 +82,8 @@ Follow along in [LAPACK_julia.ipynb](LAPACK_julia.ipynb).
 
 Now, we'll see what an actual function call to the library looks like in C.  See the [syev_example.c](code/lapack/syev_example.c) file for example.  The function call for `dsyev` can be found [here](http://www.netlib.org/lapack/explore-html/d2/d8a/group__double_s_yeigen_ga442c43fca5493590f8f26cf42fed4044.html#ga442c43fca5493590f8f26cf42fed4044).
 
+Note that fortran compilers usually append underscores (`_`)to subroutine names.  This is why when you call `dsyev` from C, you actually write `dsyev_`.  If you look at symbols in the LAPACK library, you'll see the underscore there as well.
+
 ## Python Interface
 
 Like BLAS, SciPy exposes a LAPACK interface.  See [here](https://docs.scipy.org/doc/scipy/reference/linalg.lapack.html) for available functions.
@@ -115,6 +117,28 @@ You can call FFTW from Julia using the [FFTW package](https://github.com/JuliaMa
 
 See the example in the [code folder](code/fftw)
 
+## FFTW in Python
+
+There is a package that exposes an FFTW interface in [pyFFTW](https://hgomersall.github.io/pyFFTW/).
+
+Numpy and Scipy both have FFT functionality as well (but don't seem to have the low-level interface).
+
 ## Exercise
 
-* Convolution of two vectors
+[Convolution](https://en.wikipedia.org/wiki/Convolution) of two vectors corresponds to point-wise multiplication in the Fourier domain.
+
+Use FFTW to convolve two boxcar signals of length 16, where the boxcar is of width 4, and centered. E.g.
+```julia
+# 1-indexed vectors
+x = zeros(16);
+x[7:10] = 1
+```
+
+What does the resulting vector look like?
+
+Hint: if you are unfamiliar with convolution, here's some pseudocode:
+1. Construct the boxcar signal (vector) `x`
+2. Take an FFT of `x` to go to the Fourier domain.  Call the resulting vector `y`.
+3. Take the element-wise square of `y` in-place
+4. Take an IFFT of `y` to go back to the spatial domain.
+5. Print/visualize the resulting vector.
