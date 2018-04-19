@@ -3,16 +3,19 @@ CC=gcc
 
 FFLAGS=-Wall
 
-LLAPACK=-llapack
 LBLAS=-lblas
+LLAPACK=-llapack $(LBLAS)
 
-default: syev_ex
+default: syev_ex gesvd_ex
 
 strsv_ex : strsv_ex.f90 matprint.f90
-	$(FC) $(FFLAGS) strsv_ex.f90 matprint.f90 $(LLAPACK) $(LBLAS) -o strsv_ex
+	$(FC) $(FFLAGS) strsv_ex.f90 matprint.f90 $(LLAPACK) -o strsv_ex
 
 syev_ex : syev_example.c
-	$(CC) -o syev_ex syev_example.c $(LLAPACK) $(LBLAS)
+	$(CC) -o syev_ex syev_example.c $(LLAPACK)
+
+gesvd_ex : gesvd_example.c
+	$(CC) -o gesvd_ex gesvd_example.c $(LLAPACK)
 
 .PHONY : clean
 clean:

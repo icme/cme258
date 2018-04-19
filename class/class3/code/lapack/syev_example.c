@@ -1,7 +1,6 @@
 #include <stdio.h>
+#include "matrixIO.h"
 
-// declarations
-void print_matrix(double *A, int m, int n);
 // dsyev declaration
 void dsyev_(
 	char *JOBZ,
@@ -47,14 +46,4 @@ int main() {
 
 
 	return 1;
-}
-
-void print_matrix(double *A, int m, int n) {
-	for (int i = 0; i < m; i++) {
-		for (int j = 0; j < n; j++) {
-			printf("%6.2f", A[i + j*m]);
-		}
-		printf("\n");
-	}
-	return;
 }
