@@ -9,8 +9,9 @@ Today:
 ## Randomized Linear Algebra
 Using what we've learned over the last couple weeks, we have enough to implement **randomized algorithms** in a language of your choosing. These algorithms typically give an approximation to the solution/decomposition for very large problems.
 
-Instead of factorizing a large (dense or sparse) matrix directly, we're going to obtain a low-rank approximation of it. For example, to obtain an approximate eigenvalue decomposition of a large matrix A, we do the following:
-  - Obtain a random tall-skinny matrix Q with orthogonal columns
+Instead of factorizing a large (dense or sparse) matrix directly, we're going to obtain a low-rank approximation of it. For example, to obtain an approximate eigenvalue decomposition of a large symmetric matrix A, we do the following:
+  - Generate a random tall-skinny (``n-by-l``) Gaussian matrix ``Y``, then form ``Y = (A^q)*Y`` for some ``q`` (typically small, ``q=1,2,3``)
+  - Form an orthogonal basis ``Q`` for the range of ``Y``, using the QR decomposition of Y
   - Compute B = Q'\*A\*Q
   - Compute the eigenvalue decomposition of B = V D V'
   - Obtain approximate factorization A ~ (QV) D (QV)'
@@ -20,7 +21,10 @@ If A is large and dense, the only tools we need to accomplish this is a few GEMM
 The details on how to choose the random matrices (Q above) along with the detailed theory can be found [here](https://arxiv.org/pdf/0909.4061.pdf).
 
 ## Exercise
-TODO: Write basic random eigenvalue decomposition
+1. Download the zenios matrix from [here](https://sparse.tamu.edu/HB/zenios).
+2. Using the language of your choosing (easiest in Python or Julia), load the matrix.
+3. Implement the approximate eigenvalue decomposition as described above. Use the appropriate LAPACK call to compute the eigenvalues
+4. Try for different values of ``q`` and ``l`` to see how good the eigenpairs are (you can check by computing ``norm(A*v - d*v)``, where ``v,d`` are an approximate eigenpair).
 
 ## Sparse Matrices
 Suppose we have an n-by-n matrix, with n=10^6, but only 5 entries per row.
