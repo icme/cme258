@@ -12,9 +12,9 @@ Using what we've learned over the last couple weeks, we have enough to implement
 Instead of factorizing a large (dense or sparse) matrix directly, we're going to obtain a low-rank approximation of it. For example, to obtain an approximate eigenvalue decomposition of a large symmetric matrix A, we do the following:
   - Generate a random tall-skinny (``n-by-l``) Gaussian matrix ``Y``, then form ``Y = (A^q)*Y`` for some ``q`` (typically small, ``q=1,2,3``)
   - Form an orthogonal basis ``Q`` for the range of ``Y``, using the QR decomposition of Y
-  - Compute B = Q'\*A\*Q
-  - Compute the eigenvalue decomposition of B = V D V'
-  - Obtain approximate factorization A ~ (QV) D (QV)'
+  - Compute ``B = Q' A Q``
+  - Compute the eigenvalue decomposition of ``B = V D V'``
+  - Obtain approximate factorization ``A ~ (QV) D (QV)'``
 
 If A is large and dense, the only tools we need to accomplish this is a few GEMM calls to form the smaller matrices, along with your favorite LAPACK call on said matrix.
 
@@ -23,6 +23,23 @@ The details on how to choose the random matrices (Q above) along with the detail
 ## Exercise
 1. Download the zenios matrix from [here](https://sparse.tamu.edu/HB/zenios).
 2. Using the language of your choosing (easiest in Python or Julia), load the matrix.
+
+In Julia:
+```Julia
+# Pkg.add("MAT")
+using MAT
+vars = matread(path_to_mat_file)
+A = vars["Problem"]["A"]
+```
+
+In Python:
+```Python
+import scipy as sp
+import scipy.io
+mat_dict = sp.io.loadmat(path_to_mat_file)
+A = mat_dict["Problem"]["A"]
+```
+
 3. Implement the approximate eigenvalue decomposition as described above. Use the appropriate LAPACK call to compute the eigenvalues
 4. Try for different values of ``q`` and ``l`` to see how good the eigenpairs are (you can check by computing ``norm(A*v - d*v)``, where ``v,d`` are an approximate eigenpair).
 
