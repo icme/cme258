@@ -157,6 +157,10 @@ n = 10000;
 m = 3000;
 A = sprand(m,n,0.001);
 
+spqr_opts = struct('Q','discard',...
+                   'econ', n,...
+                   'ordering','fixed');
+
 tic; [~,R] = spqr(A, spqr_opts); toc;
 Elapsed time is 20.179781 seconds.
 
@@ -196,6 +200,8 @@ toc
 # floating point ops: 2.360e+10
 Elapsed time is 11.833174 seconds.
 ```
+
+**Warning**: the L above does not include the diagonal. It is assumed that L has ones on the diagonal, so they are not explicitly stored.
 
 ## Exercise
 
