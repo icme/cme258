@@ -283,7 +283,7 @@ x initialized to random vector
 while(|lambda - lambda_old| > tol and k < maxit)
   lambda_old = lambda
   lambda = x'*A*x/(x'*x)
-  x = A*x/norm(x)
+  x = A*x/norm(A*x)
 end
 (lambda,x) are eigenvalue/eigenvector pair
 ```
