@@ -80,15 +80,55 @@ You can find more about vectors and matrices in Eigen [here](http://eigen.tuxfam
   * What are the types of `m` and `v` in each file?
   * How would you typedef `VectorXd`?
   * How do you perform matrix-vector multiplication in Eigen?
-* Write a C++ program that takes a random matrix and applies it to a random vector, where the size of the matrix is `5x5`.  Write the appropriate typedefs.
+* Write a C++ program that takes a random matrix and applies it to a random vector, where the size of the matrix is `5x5`.  Write some appropriate typedefs.
 
 # Linear Systems
 
 Unlike LAPACK's driver routines, in Eigen you choose a decomposition to use for solving a linear system.
 
-http://eigen.tuxfamily.org/dox/group__TutorialLinearAlgebra.html
+This will generally look something like the following template:
+```cpp
+MatrixXd A;
+VectorXd b;
+// initialize A & b
+...
+// solves A\b
+VectorXd x = A.factorizationAlg().solve(b);
+```
 
-http://eigen.tuxfamily.org/dox/group__TopicLinearAlgebraDecompositions.html
+Since you get to choose your factorization, you need to have some idea of what is available to you, and when to use each choice.  Eigen has a page [here](http://eigen.tuxfamily.org/dox/group__TopicLinearAlgebraDecompositions.html) that describes the available factorizations, their requirements, speed, and accuracy.
+
+## Refresher on Matrix Factorizations
+
+| Factorization        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+
+| Decomposition |	Method | Requirements | Speed (small) | Speed (large) | Accuracy|
+| ------------- |:-------------:| :-----|:-----:|:-----:|:-----:|
+|PartialPivLU	|partialPivLu()|	Invertible|	++	|++	|+|
+
+FullPivLU	fullPivLu()	None	-	- -	+++
+HouseholderQR	householderQr()	None	++	++	+
+ColPivHouseholderQR	colPivHouseholderQr()	None	+	-	+++
+FullPivHouseholderQR	fullPivHouseholderQr()	None	-	- -	+++
+CompleteOrthogonalDecomposition	completeOrthogonalDecomposition()	None	+	-	+++
+LLT	llt()	Positive definite	+++	+++	+
+LDLT	ldlt()	Positive or negative
+semidefinite	+++	+	++
+BDCSVD	bdcSvd()	None	-	-	+++
+JacobiSVD	jacobiSvd()	None	-	- - -	+++
+
+
+
+### Exercise
+* Modify `ex_lin.cpp` to use `PartialPivLU()` as a factorization
+* Try using another factorization.  Are there any that do not apply to this problem?
+* Modify `ex_factor.cpp` to create a factorization of a large symmetric positive-semidefinite matrix.  Which factorization is fastest?
+
+If you want to compare what you find in the last question to benchmarks, see [here](http://eigen.tuxfamily.org/dox/group__DenseDecompositionBenchmark.html).
 
 # Eigenvalues, Singular Values
 
@@ -113,3 +153,5 @@ http://eigen.tuxfamily.org/dox/group__TutorialSparse.html
 
 # Extras:
 http://downloads.tuxfamily.org/eigen/eigen_CGLibs_Giugno_Pisa_2013.pdf
+
+http://eigen.tuxfamily.org/dox/TopicInsideEigenExample.html
