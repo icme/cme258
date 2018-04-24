@@ -96,30 +96,24 @@ VectorXd b;
 VectorXd x = A.factorizationAlg().solve(b);
 ```
 
-Since you get to choose your factorization, you need to have some idea of what is available to you, and when to use each choice.  Eigen has a page [here](http://eigen.tuxfamily.org/dox/group__TopicLinearAlgebraDecompositions.html) that describes the available factorizations, their requirements, speed, and accuracy.
+
 
 ## Refresher on Matrix Factorizations
 
-| Factorization        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
+Since you get to choose your factorization, you need to have some idea of what is available to you, and when to use each choice.  Eigen has a page [here](http://eigen.tuxfamily.org/dox/group__TopicLinearAlgebraDecompositions.html) that describes the available factorizations, their requirements, speed, and accuracy.  The table is copied below:
 
 | Decomposition |	Method | Requirements | Speed (small) | Speed (large) | Accuracy|
-| ------------- |:-------------:| :-----|:-----:|:-----:|:-----:|
-|PartialPivLU	|partialPivLu()|	Invertible|	++	|++	|+|
-
-FullPivLU	fullPivLu()	None	-	- -	+++
-HouseholderQR	householderQr()	None	++	++	+
-ColPivHouseholderQR	colPivHouseholderQr()	None	+	-	+++
-FullPivHouseholderQR	fullPivHouseholderQr()	None	-	- -	+++
-CompleteOrthogonalDecomposition	completeOrthogonalDecomposition()	None	+	-	+++
-LLT	llt()	Positive definite	+++	+++	+
-LDLT	ldlt()	Positive or negative
-semidefinite	+++	+	++
-BDCSVD	bdcSvd()	None	-	-	+++
-JacobiSVD	jacobiSvd()	None	-	- - -	+++
+| ------------- |:-------------:| :-----:|:-----:|:-----:|:-----:|
+|PartialPivLU	| `partialPivLu()` |	Invertible |	++	|++	|+|
+|FullPivLU	|`fullPivLu()`	|None	|-	|- -|	|+++|
+|HouseholderQR|	`householderQr()`|	None|	++|	++|	+|
+|ColPivHouseholderQR|	`colPivHouseholderQr()`|	None	|+|	-|	+++|
+|FullPivHouseholderQR|`fullPivHouseholderQr()`|	None|	-|	- -|	+++|
+|CompleteOrthogonalDecomposition|	`completeOrthogonalDecomposition()`|	None|	+|	-|	+++|
+|LLT|`llt()`|	Positive definite|	+++|	+++|	+|
+|LDLT	|`ldlt()`|	Semidefinite|	+++|	+|	++|
+|BDCSVD|`bdcSvd()`|	None	|-|	-|	+++|
+|JacobiSVD|`jacobiSvd()`|None|	-|	- - -|	+++|
 
 
 
@@ -132,18 +126,26 @@ If you want to compare what you find in the last question to benchmarks, see [he
 
 # Eigenvalues, Singular Values
 
-http://eigen.tuxfamily.org/dox/group__Eigenvalues__Module.html
+[Eigenvalue solvers](http://eigen.tuxfamily.org/dox/group__Eigenvalues__Module.html) and [SVD solvers](http://eigen.tuxfamily.org/dox/group__SVD__Module.html) are classes inside Eigen.
 
-http://eigen.tuxfamily.org/dox/group__SVD__Module.html
+As with linear system solves, you'll want to know some properties of your matrix to select an appropriate solver.
 
-Note: Eigen does not use the MRRR algorithm for Hermitian matrices.  
+Note that Eigen does not appear to use the MRRR algorithm for Hermitian matrices.  You may want to use LAPACK if you really care about state-of-the-art speed and accuracy for these problems.
+
+### Demonstration
+See `ex_eigendecomp.cpp` for a simple example. The reference for the `SelfAdjointEigenSolver` class can be found [here](http://eigen.tuxfamily.org/dox/classEigen_1_1SelfAdjointEigenSolver.html).
+
+### Exercise
+* Modify `ex_eigendecomp` to compute the SVD of the matrix `A`. See the SVD reference [here](http://eigen.tuxfamily.org/dox/group__SVD__Module.html) (choose an algorithm to use).
+Use the following methods to print out the contents of the factorization: `singularValues()`, `matrixU()`, and `matrixV()`.
+* You can use SVDs to solve linear systems as well.  Try solving `Ax = [1;2]` using your SVD object (use the `solve()` method).
 
 # Sparse Matrices
 Eigen's sparse matrix type is a variant of CSR/CSC which in practice allows for faster additions and deletions.
 
-http://eigen.tuxfamily.org/dox/classEigen_1_1SparseMatrix.html
+[Sparse Matrix Type](http://eigen.tuxfamily.org/dox/classEigen_1_1SparseMatrix.html)
 
-http://eigen.tuxfamily.org/dox/group__TutorialSparse.html
+[Sparse Matrix Tutorial](http://eigen.tuxfamily.org/dox/group__TutorialSparse.html)
 
 
 # Threading
