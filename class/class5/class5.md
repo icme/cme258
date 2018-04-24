@@ -1,9 +1,6 @@
-# Class 5
+# Class 5 - Eigen
 
-Today:
-* Eigen
-
-We've spent some time looking at BLAS and LAPACK, which require a fair amount of understanding of matrix data structures, and book keeping.  Today we'll talk about a more modern linear algebra library, [Eigen](http://eigen.tuxfamily.org/dox/), which is for C++.
+We've spent some time looking at BLAS and LAPACK, which require a fair amount of funny names and book keeping.  Today we'll talk about a more modern linear algebra library, [Eigen](http://eigen.tuxfamily.org/dox/), which is for C++.  Using classes and operator overloading, this allows you to write code that looks more like linear algebra does on paper.
 
 There are several other modern C++ linear algebra libraries out there, including
 * [Armadillo](http://arma.sourceforge.net/)
@@ -16,6 +13,8 @@ For HPC, here are some options:
 * [PETSc](https://www.mcs.anl.gov/petsc/features/index.html)
 
 These libraries also include much more than distributed linear algebra, such as ODE/PDE solvers.
+
+For certain things, these newer libraries don't always have the speed and robustness of tuned BLAS/LAPACK, but you can still do quite of linear algebra with them.
 
 
 # Eigen
@@ -30,7 +29,7 @@ There's no single "best" library for numerical linear algebra out there.  We're 
 * [Stan](http://mc-stan.org/)
 * Various scientific applications (physics, chemistry, ...)
 
-Eigen isn't perfect: its algorithms under the hood are not all state-of-the-art (but are still good), but it can still be very fast, particularly for small matrices.  It is a nice compromise between the low-level control you can have in BLAS/LAPACK, and ease of programming.
+Eigen isn't perfect: its algorithms under the hood are not all state-of-the-art (but are still good), but it can still be very fast, particularly for small matrices.  It is a nice compromise between the low-level control you can have with C++, and ease of programming.
 
 # Getting Started
 
@@ -173,3 +172,4 @@ If you like Eigen, and want to learn more:
 * The [documentation](http://eigen.tuxfamily.org/dox/index.html) is easy to navigate
 * This [example](http://eigen.tuxfamily.org/dox/TopicInsideEigenExample.html) will guide you through more detailed memory access information.
 * These [slides](http://downloads.tuxfamily.org/eigen/eigen_CGLibs_Giugno_Pisa_2013.pdf) show how Eigen can be used for computer graphics.
+* If you want to use BLAS and LAPACK under the hood, you can! See [here](https://eigen.tuxfamily.org/dox/TopicUsingBlasLapack.html) for details.
