@@ -150,10 +150,26 @@ Eigen's sparse matrix type is a variant of CSR/CSC which in practice allows for 
 
 # Threading
 
-* Use OpenMP http://eigen.tuxfamily.org/dox/TopicMultiThreading.html
+In order to use all cores available on your machine for computation, you can use Eigen with [OpenMP](http://www.openmp.org/). See Eigen's explanation [here](http://eigen.tuxfamily.org/dox/TopicMultiThreading.html).
+
+### Demonstration/Exercise
+1. If you don't already have it, install OpenMP using your package manager
+2. Make the executables `ex_omp0` and `ex_omp1`.  Compare their run times using the Unix `time` command
+```sh
+> time ./ex_omp0
+...
+> time ./ex_omp1
+...
+```
+What is the difference between the two executables?
+3. Modify `ex_omp.cpp` to factorize the matrix `B` (what's a good factorization?).  Now how do the times compare?
 
 
 # Extras:
-http://downloads.tuxfamily.org/eigen/eigen_CGLibs_Giugno_Pisa_2013.pdf
 
-http://eigen.tuxfamily.org/dox/TopicInsideEigenExample.html
+If you like Eigen, and want to learn more:
+
+* Check out Eigen's [wiki](http://eigen.tuxfamily.org/index.php?title=Main_Page)
+* The [documentation](http://eigen.tuxfamily.org/dox/index.html) is easy to navigate
+* This [example](http://eigen.tuxfamily.org/dox/TopicInsideEigenExample.html) will guide you through more detailed memory access information.
+* These [slides](http://downloads.tuxfamily.org/eigen/eigen_CGLibs_Giugno_Pisa_2013.pdf) show how Eigen can be used for computer graphics.
