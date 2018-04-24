@@ -2,9 +2,8 @@
 
 Today:
   1. Iterative methods for linear systems/least-squares
-  2. Matlab implementations (native + SOL)
-  2. SOL implementations
-  3. Julia packages (IterativeSolves.jl, Krylov.jl)
+  2. Matlab (native + SOL) / Julia implementations
+  3. MEX
 
 # Iterative Methods for Linear Systems
 So far, we've seen two major libraries for solving linear systems:
@@ -203,6 +202,7 @@ x2 = rand(size(A)[1],1)
 cg!(x2, A, b, maxiter=100, log=true, initially_zero=false) # in place, warm start
 ```
 **Linear Maps**
+
 To support "matrix-free" implementations, IterativeSolvers.jl will take an object A which supports the following operations:
    - A*v : computes the matrix-vector product for v::AbstractVector;
    - A_mul_B!(y, A, v) : same as above but in-place
@@ -275,9 +275,12 @@ Thus for example, to get second input argument, you can use ``plhs[1]``.
 If your inputs are matrices, you can get the dimensions using ``mxGetM()`` and ``mxGetN()`` for the rows and columns respectively. To get a (pointer) array (note it is a 1D array in **column** major order), use ``mxGetPr()``.
 
 There are similar functions to create new Matlab matrices (for example, to allocate memory for the output), to grab scalars, etc.
+  - ``mxArray* p = mxCreateDoubleMatrix(m, n, mxREAL)`` to allocate m-by-n matrix for output.
+  - ``double* a = mxGettPr(p)`` to get underlying array. **Warning:** matrices are passed in **column-major** order.
+  - ``mwSize`` : general type for sizes (like an ``int``), but allows more cross-platform flexibility. These should be used instead of ``int``'s.
 
 ## Exercise
-TODO: Make MEX exercise
+1. Implement a MEX interface for matrix vector multiplication. That is, create a MEX function which accepts ``A`` and ``x`` and returns ``y = A*x``. You can do a naive implementation (but you can call BLAS if you like!).
 
 ## MEX and Your Homework
 Mex provides you with a way of calling functions in C/C++/Fortran from Matlab. Mex can also be evil and finicky, but can be very useful if you can get it to work, and getting some basic usage out of it shouldn't be too tough.
@@ -285,13 +288,16 @@ Mex provides you with a way of calling functions in C/C++/Fortran from Matlab. M
 Your homework will be to deblur an image:
 
 Original Image:
-![alt-text](jetplane2.tif)
+
+![alt-text](jetplane2.png)
 
 Blurred Image:
-![alt-text](jetplane_blur2.tif)
+
+![alt-text](jetplane_blur2.png)
 
 Deblurred Image:
-![alt-text](jetplane_deblur2.tif)
+
+![alt-text](jetplane_deblur2.png)
 
 If the true image is ``X``, you can think of the blurred image as ``Y = A * X + eps``, where ``eps ~ N(0, sigma^2)`` is Gaussian noise for some small variance (say ``sigma ~ 1``). In order to recover the original image, we will solve the linear system
 
