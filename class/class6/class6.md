@@ -125,8 +125,6 @@ Choose depending on your constraints:
 |MINRES(A'A x = A'b) | LSMR(A x = b)
 |CG(AA' y = b, x = A'y) | CRAIG(Ax = b)
 
-  LS versions vs normal equation methods
-
 ## Exercise
 
 We'll investigate the difference between using CRAIG and using CG to solve the least-norm problem ``min |x| such that A*x = b``.
@@ -191,6 +189,48 @@ Error vs. Recovery (forward error vs. backward error)
   - Heavy duty library widely used in scientific computing with most solvers that you would ever need (particularly for PDE problems)
   - Significantly more complicated to use, no time to be included as part of this course
 
+## IterativeSolvers.jl
+Provides a subset of the most common iterative methods for linear systems. To install:
+```Julia
+Pkg.add("IterativeSolvers")
+Pkg.add("LinearMaps") # <- optional
+```
+Calling solvers is relatively straightforward as in Matlab (docs are [here](https://juliamath.github.io/IterativeSolvers.jl/latest/index.html)):
+```Julia
+# A is some matrix, b is some vector
+x1 = cg(A, b, maxiter=100, log=true) # Not in place (always initially zero)
+x2 = rand(size(A)[1],1)
+cg!(x2, A, b, maxiter=100, log=true, initially_zero=false) # in place, warm start
+```
+**Linear Maps**
+To support "matrix-free" implementations, IterativeSolvers.jl will take an object A which supports the following operations:
+   - A*v : computes the matrix-vector product for v::AbstractVector;
+   - A_mul_B!(y, A, v) : same as above but in-place
+   - eltype(A) : returns the element type
+   - size(A, d) : return matrix size along dth dimension
+
+You can implement these into a class yourself, or use LinearMaps.jl, which will construct an object for you if you provide the necessary functions.
+
+Constructors:
+```Julia
+LinearMap(A::Union{AbstractMatrix,LinearMap}; kwargs...) = WrappedMap(A; kwargs...)
+LinearMap(f, M::Int; kwargs...) = LinearMap{Float64}(f, M; kwargs...)
+LinearMap(f, M::Int, N::Int; kwargs...) = LinearMap{Float64}(f, M, N; kwargs...)
+LinearMap(f, fc, M::Int; kwargs...) = LinearMap{Float64}(f, fc, M; kwargs...)
+LinearMap(f, fc, M::Int, N::Int; kwargs...) = LinearMap{Float64}(f, fc, M, N; kwargs...)
+```
+Idea: Pretend LinearMap is MxN matrix.
+  - ``f`` : function for multiplication
+  - ``fc`` : function for multiplication with adjoint
+  - ``M`` : Number of rows of LinearMap. Need to explicitly provide
+  - ``N`` : Number of columns of LinearMap. Only need to provide if ``fc`` is used.
+  - Additional named arguments possible, e.g., ``issymmetric``, ``isposdef``...
+
+## Exercise
+1. Install IterativeSolvers.jl and LinearMaps.jl
+2. Try calling one of the iterative methods (correctly) with an explicit matrix. Then try applying an incorrect iterative method (e.g. nonsymmetric matrix on CG/MINRES). What happens?
+3. Create a LinearMap for the same problem as the first part of the second exercise, and then call the iterative method on that instead.
+
 ## How to work with MEX
   There's a pretty good introduction [here](https://classes.soe.ucsc.edu/ee264/Fall11/cmex.pdf).
 
@@ -235,6 +275,9 @@ Thus for example, to get second input argument, you can use ``plhs[1]``.
 If your inputs are matrices, you can get the dimensions using ``mxGetM()`` and ``mxGetN()`` for the rows and columns respectively. To get a (pointer) array (note it is a 1D array in **column** major order), use ``mxGetPr()``.
 
 There are similar functions to create new Matlab matrices (for example, to allocate memory for the output), to grab scalars, etc.
+
+## Exercise
+TODO: Make MEX exercise
 
 ## MEX and Your Homework
 Mex provides you with a way of calling functions in C/C++/Fortran from Matlab. Mex can also be evil and finicky, but can be very useful if you can get it to work, and getting some basic usage out of it shouldn't be too tough.
