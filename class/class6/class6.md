@@ -169,7 +169,7 @@ Error vs. Recovery (forward error vs. backward error)
 
 
   - ``|rk| = |b - A xk| <= eps1*|A||xk| + eps2*|b|``
-    - Actually computable!
+    - Actually (sort-of) computable! (We can get pretty good estimates of ``|A|``)
     - Some situations only require conditions on the residual (e.g. inexact Newton uses eps1 = 0 and controls eps2 > 0)
     - Just cause ``|rk|`` is small, doesn't mean ``|x*-xk|`` is small.
     - Idea behind rhs: gives correct sense of relative scaling
@@ -188,6 +188,17 @@ Error vs. Recovery (forward error vs. backward error)
   - Heavy duty library widely used in scientific computing with most solvers that you would ever need (particularly for PDE problems)
   - Significantly more complicated to use, no time to be included as part of this course
 
+## Calling iterative methods in Matlab
+Generally pretty clear from the documentation. One useful thing:
+
+**Anonymous functions**
+
+These are useful for defining functions which get passed in elsewhere without needing to create a new file for them (e.g. a function which computes products). To create one, we just use the syntax:
+```MATLAB
+# Suppose B is defined elsewhere
+A = @(x) B*x;
+```
+
 ## IterativeSolvers.jl
 Provides a subset of the most common iterative methods for linear systems. To install:
 ```Julia
@@ -201,6 +212,18 @@ x1 = cg(A, b, maxiter=100, log=true) # Not in place (always initially zero)
 x2 = rand(size(A)[1],1)
 cg!(x2, A, b, maxiter=100, log=true, initially_zero=false) # in place, warm start
 ```
+The methods return:
+- ``x`` if not in-place
+- if ``log=true``, then returns ``convergenceHistory`` such that
+  - ``convergenceHistory[:tol]`` is the stopping tolerance
+  - ``convergenceHistory[:resnom]`` is the residual norm at every iteration
+  - More stuff depending on the method
+
+A cool feature: You can treat the methods as **iterators**. This means that you can do one step of the method, get control back to the program that called the method and access all the internal variables of the method. Advantages:
+ - Multiple right-hand sides without re-initializing
+ - Multiple preconditioners for flexible methods
+ - Re-doing the first exercise the right way (if they had CRAIG implemented)!
+
 **Linear Maps**
 
 To support "matrix-free" implementations, IterativeSolvers.jl will take an object A which supports the following operations:
@@ -301,17 +324,21 @@ Deblurred Image:
 
 If the true image is ``X``, you can think of the blurred image as ``Y = A * X + eps``, where ``eps ~ N(0, sigma^2)`` is Gaussian noise for some small variance (say ``sigma ~ 1``). In order to recover the original image, we will solve the linear system
 
-`` (A' * A + lamdba I) X = A' * Y ``
+`` (A' * A + lamdba^2 I) X = A' * Y ``
 
 or equivalently a regularized least-squares problem
 
-`` X* = argmin_X |A * X - Y|_2^2 + lambda^2/2 |X|^2``
+`` X* = argmin_X |A * X - Y|_2^2 + lambda/2 |X|^2``
 
 with some parameter ``lambda ~ O(1e-1)`` (you can treat the image as a vector for the purposes of norms).
 
-We have written a function to blur an m-by-n pixel image in C++ in the file ``blur.cpp``. You can think of the blurring operation as a linear operator ``A`` (this linear operator is symmetric). Your job is to write a MEX interface to call this blurring operation from Matlab, so that you can use some iterative solver that we have discussed (which one is up to you).
+We have written a function to blur an m-by-n pixel image in C++ in the file ``blur.cpp``. The mex interface expects 2 inputs:
+  - a matrix (m-by-n) for the image
+  - scalar ``tau`` which is the blurring width.
 
-We have provided you with Matlab starter code; in principle, all you have to do is add a line to define the linear operator in Matlab, and to call an iterative method using this linear operator (remember that you may need your linear operator to be able to apply a transpose, even if this gets ignored under the hood). You may also need to play around with the parameters a little bit (tau and lambda).
+You can think of the blurring operation as a linear operator ``A`` (this linear operator is symmetric). Your job is to write a MEX interface to call this blurring operation from Matlab, so that you can use some iterative solver that we have discussed (which one is up to you).
+
+We have provided you with Matlab starter code; you have to add a line to define the linear operator in Matlab (e.g. could use anonymous functions here...), and to call an iterative method using this linear operator (remember that you may need your linear operator to be able to apply a transpose, even if this gets ignored under the hood). You may also need to play around with the parameters a little bit (tau and lambda).
 
 **What to submit:** Your C++ and Matlab code, as well as the deblurred images. Ideally, you should do some argument checking to make sure people can't misuse your mex interface.
 
