@@ -64,16 +64,16 @@ You can implement the above methods fairly easily yourself.
   - If approximation good enough, then done!
 
 # The Zoo of Iterative Solvers
-| Method | Problem Type | Matrix Type | Decription | Recurrence | Monotonic* |
-|:--:|:------------- |:------------|:--------------|:-----------|:-----------|
-| CG |  Linear System | SPD | min A-norm | short | yes
-| MINRES | Linear system | Symmetric | min residual | short | yes
-| GMRES | Linear system | Square | min residual | long | yes
-| BiCGSTAB | Linear system | Square | BiCG+GMRES | short | no
-| LSQR | Least-squares | Rectangular | min residual | short | yes
-| LSMR | Least-squares | Rectangular | min opt. resid. | short | yes
-| CRAIG | Consistent Least-Norm | Rectangular | min AA'-norm | short | yes
-| LSRN | Big Least-squares | Rectangular | Depends | short(ish) | yes(ish)
+| Method | Problem Type | Product | Matrix Type | Decription | Recurrence | Monotonic* |
+|:--:|:------------- |:--------|:------------|:--------------|:-----------|:-----------|
+| CG |  Linear system | A | SPD | min A-norm | short | yes
+| MINRES | Linear system | A | Symmetric | min residual | short | yes
+| GMRES | Linear system | A | Square | min residual | long | yes
+| BiCGSTAB | Linear system | A, A' | Square | BiCG+GMRES | short | no
+| TFQMR | Linear system | A | Square | quasi-min resid. | short | no
+| LSQR | Least-squares | A, A' | Rectangular | min residual | short | yes
+| LSMR | Least-squares | A, A' | Rectangular | min opt. resid. | short | yes
+| CRAIG | Consistent Least-Norm | A, A' | Rectangular | min AA'-norm | short | yes
 \* Monotonic in some sense (norm of some relevant quantity).
 
 There are way-way-WAY more iterative methods than this. The above are some of the more popular methods (although many have been left out!) that tend to be available and used.
@@ -328,7 +328,7 @@ If the true image is ``X``, you can think of the blurred image as ``Y = A * X + 
 
 or equivalently a regularized least-squares problem
 
-`` X* = argmin_X |A * X - Y|_2^2 + lambda/2 |X|^2``
+`` X* = argmin_X 1/2 |A * X - Y|_2^2 + lambda/2 |X|^2``
 
 with some parameter ``lambda ~ O(1e-1)`` (you can treat the image as a vector for the purposes of norms).
 
