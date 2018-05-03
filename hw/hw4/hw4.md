@@ -15,7 +15,7 @@ Let `A` be a `m x n` matrix of floating point numbers.  Finding the top singular
 ```
 maximize u'*A*v
 subject to: u'*u = 1
-						v'*v = 1
+            v'*v = 1
 ```
 The largest singular value is the maximum value of the objective.
 
@@ -67,7 +67,7 @@ SNR = var_sig/var_noise
 y = X * β0 + ϵ
 ```
 
-solve the least-squares problem above for `β`.  You can compare against the true `β0`.
+solve the least-squares problem above for `β`, with integer constraints.  You can compare against the true `β0`.
 
 Optional:
 For different values of `n` and `p`, how well can you do? (try `n = p, 1.5*p, 2*p, ...`)
