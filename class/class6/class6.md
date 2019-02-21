@@ -255,7 +255,7 @@ Idea: Pretend LinearMap is MxN matrix.
 3. Create a LinearMap for the same problem as the first part of the second exercise, and then call the iterative method on that instead.
 
 ## How to work with MEX
-  There's a pretty good introduction [here](https://classes.soe.ucsc.edu/ee264/Fall11/cmex.pdf).
+  There's a pretty good introduction [here](http://www.computingportal.org/sites/default/files/cmex.pdf).
 
   In short, MEX gives you a way to call C/C++/Fortran functions from Matlab. The basic form of the source code looks like
 
